@@ -27,12 +27,13 @@ type BuiltinAgentName =
 
 ### 1. 🏛️ Sisyphus（西西弗斯）— 主编排器
 
-| 属性     | 值                                      |
-| -------- | --------------------------------------- |
-| 角色     | 主 Orchestrator（编排器）               |
-| Mode     | `primary`（主 agent）                   |
-| 你的配置 | `coding_plan/glm-5.2`                   |
-| 模型路由 | GPT / GLM / Claude 各有不同 prompt 优化 |
+| 属性         | 值                                      |
+| ------------ | --------------------------------------- |
+| 角色         | 主 Orchestrator（编排器）               |
+| Mode         | `primary`（主 agent）                   |
+| 你的配置     | `coding_plan/glm-5.2`                   |
+| 官方推荐配置 | `anthropic/claude-opus-4-7`（max）      |
+| 模型路由     | GPT / GLM / Claude 各有不同 prompt 优化 |
 
 **职责**：
 
@@ -43,8 +44,8 @@ type BuiltinAgentName =
 
 **源码位置**：
 
-- `packages/omo-opencode/src/agents/builtin-agents/sisyphus-agent.ts`
-- `packages/omo-opencode/src/agents/sisyphus-agent-config.ts`
+- [`packages/omo-opencode/src/agents/builtin-agents/sisyphus-agent.ts`](https://github.com/code-yeongyu/oh-my-openagent/blob/dev/packages/omo-opencode/src/agents/builtin-agents/sisyphus-agent.ts)
+- [`packages/omo-opencode/src/agents/sisyphus-agent-config.ts`](https://github.com/code-yeongyu/oh-my-openagent/blob/dev/packages/omo-opencode/src/agents/sisyphus-agent-config.ts)
 
 **三种模型变体**：
 
@@ -57,12 +58,13 @@ buildClaudeSisyphusAgentConfig() // Claude 模型优化
 
 ### 2. 🔨 Hephaestus（赫菲斯托斯）— 深度自主工作者
 
-| 属性     | 值                                       |
-| -------- | ---------------------------------------- |
-| 角色     | 自主深度执行者                           |
-| Mode     | `primary`                                |
-| 绰号     | "The Legitimate Craftsman"（合法工匠）   |
-| 模型限制 | 仅支持 GPT 模型                          |
+| 属性         | 值                                       |
+| ------------ | ---------------------------------------- |
+| 角色         | 自主深度执行者                           |
+| Mode         | `primary`                                |
+| 绰号         | "The Legitimate Craftsman"（合法工匠）   |
+| 模型限制     | 仅支持 GPT 模型                          |
+| 官方推荐配置 | `openai/gpt-5.5`（medium）               |
 
 **职责**：
 
@@ -72,7 +74,7 @@ buildClaudeSisyphusAgentConfig() // Claude 模型优化
 
 **源码位置**：
 
-- `packages/omo-opencode/src/agents/hephaestus/agent.ts`
+- [`packages/omo-opencode/src/agents/hephaestus/agent.ts`](https://github.com/code-yeongyu/oh-my-openagent/blob/dev/packages/omo-opencode/src/agents/hephaestus/agent.ts)
 
 **提示词路由**：
 
@@ -83,12 +85,13 @@ type HephaestusPromptSource = "gpt-5-5" | "gpt-5-4" | "gpt";
 
 ### 3. 🦉 Oracle（神谕）— 高级咨询师
 
-| 属性     | 值                      |
-| -------- | ----------------------- |
-| 角色     | 只读高级咨询师          |
-| Mode     | `subagent`              |
-| 你的配置 | `coding_plan/glm-5.2`   |
-| 成本     | **EXPENSIVE**（昂贵）   |
+| 属性         | 值                        |
+| ------------ | ------------------------- |
+| 角色         | 只读高级咨询师            |
+| Mode         | `subagent`                |
+| 你的配置     | `coding_plan/glm-5.2`     |
+| 官方推荐配置 | `openai/gpt-5.5`（high）  |
+| 成本         | **EXPENSIVE**（昂贵）     |
 
 **职责**：
 
@@ -105,12 +108,13 @@ type HephaestusPromptSource = "gpt-5-5" | "gpt-5-4" | "gpt";
 
 ### 4. 📚 Librarian（图书馆员）— 代码库/文档研究员
 
-| 属性     | 值                              |
-| -------- | ------------------------------- |
-| 角色     | 多仓库代码库理解                |
-| Mode     | `subagent`                      |
-| 你的配置 | `coding_plan/deepseek-v4-flash` |
-| 成本     | **CHEAP**（便宜）               |
+| 属性         | 值                              |
+| ------------ | ------------------------------- |
+| 角色         | 多仓库代码库理解                |
+| Mode         | `subagent`                      |
+| 你的配置     | `coding_plan/deepseek-v4-flash` |
+| 官方推荐配置 | `openai/gpt-5.4-mini-fast`      |
+| 成本         | **CHEAP**（便宜）               |
 
 **职责**：
 
@@ -126,12 +130,13 @@ type HephaestusPromptSource = "gpt-5-5" | "gpt-5-4" | "gpt";
 
 ### 5. 🔍 Explore（探索者）— 快速代码搜索
 
-| 属性     | 值                            |
-| -------- | ----------------------------- |
-| 角色     | 代码库上下文 grep             |
-| Mode     | `subagent`                    |
-| 你的配置 | `coding_plan/kimi-k2.7-code`  |
-| 成本     | **CHEAP**（便宜）             |
+| 属性         | 值                            |
+| ------------ | ----------------------------- |
+| 角色         | 代码库上下文 grep             |
+| Mode         | `subagent`                    |
+| 你的配置     | `coding_plan/kimi-k2.7-code`  |
+| 官方推荐配置 | `openai/gpt-5.4-mini-fast`    |
+| 成本         | **CHEAP**（便宜）             |
 
 **职责**：
 
@@ -143,12 +148,13 @@ type HephaestusPromptSource = "gpt-5-5" | "gpt-5-4" | "gpt";
 
 ### 6. 👁️ Multimodal Looker（多模态观察者）— 媒体分析
 
-| 属性     | 值                                 |
-| -------- | ---------------------------------- |
-| 角色     | 分析媒体文件                       |
-| Mode     | `subagent`                         |
-| 你的配置 | `highway/zai-org/glm-5v-turbo`     |
-| 成本     | **CHEAP**（便宜）                  |
+| 属性         | 值                                 |
+| ------------ | ---------------------------------- |
+| 角色         | 分析媒体文件                       |
+| Mode         | `subagent`                         |
+| 你的配置     | `highway/zai-org/glm-5v-turbo`     |
+| 官方推荐配置 | `openai/gpt-5.5`（medium）         |
+| 成本         | **CHEAP**（便宜）                  |
 
 **职责**：
 
@@ -159,12 +165,13 @@ type HephaestusPromptSource = "gpt-5-5" | "gpt-5-4" | "gpt";
 
 ### 7. 🧠 Metis（墨提斯）— 计划顾问
 
-| 属性     | 值                              |
-| -------- | ------------------------------- |
-| 角色     | 计划预审顾问                    |
-| Mode     | `subagent`                      |
-| 你的配置 | `coding_plan/deepseek-v4-pro`   |
-| 成本     | **EXPENSIVE**（昂贵）           |
+| 属性         | 值                              |
+| ------------ | ------------------------------- |
+| 角色         | 计划预审顾问                    |
+| Mode         | `subagent`                      |
+| 你的配置     | `coding_plan/deepseek-v4-pro`   |
+| 官方推荐配置 | `anthropic/claude-sonnet-4-6`   |
+| 成本         | **EXPENSIVE**（昂贵）           |
 
 **职责**：
 
@@ -177,12 +184,13 @@ type HephaestusPromptSource = "gpt-5-5" | "gpt-5-4" | "gpt";
 
 ### 8. 👑 Momus（莫摩斯）— 计划评论家
 
-| 属性     | 值                              |
-| -------- | ------------------------------- |
-| 角色     | 计划审查专家                    |
-| Mode     | `subagent`                      |
-| 你的配置 | `coding_plan/deepseek-v4-pro`   |
-| 成本     | **EXPENSIVE**（昂贵）           |
+| 属性         | 值                              |
+| ------------ | ------------------------------- |
+| 角色         | 计划审查专家                    |
+| Mode         | `subagent`                      |
+| 你的配置     | `coding_plan/deepseek-v4-pro`   |
+| 官方推荐配置 | `openai/gpt-5.5`（xhigh）       |
+| 成本         | **EXPENSIVE**（昂贵）           |
 
 **职责**：
 
@@ -195,11 +203,12 @@ type HephaestusPromptSource = "gpt-5-5" | "gpt-5-4" | "gpt";
 
 ### 9. 🌍 Atlas（阿特拉斯）— 编排器
 
-| 属性     | 值                              |
-| -------- | ------------------------------- |
-| 角色     | Master Orchestrator（主编排器） |
-| Mode     | `primary`                       |
-| 你的配置 | `coding_plan/deepseek-v4-flash` |
+| 属性         | 值                              |
+| ------------ | ------------------------------- |
+| 角色         | Master Orchestrator（主编排器） |
+| Mode         | `primary`                       |
+| 你的配置     | `coding_plan/deepseek-v4-flash` |
+| 官方推荐配置 | `anthropic/claude-sonnet-4-6`   |
 
 **职责**：
 
@@ -224,18 +233,19 @@ type AtlasPromptSource =
 
 **源码位置**：
 
-- `packages/omo-opencode/src/agents/atlas/agent.ts`
-- `packages/omo-opencode/src/hooks/atlas/` ← 32 个文件
+- [`packages/omo-opencode/src/agents/atlas/agent.ts`](https://github.com/code-yeongyu/oh-my-openagent/blob/dev/packages/omo-opencode/src/agents/atlas/agent.ts)
+- [`packages/omo-opencode/src/hooks/atlas/`](https://github.com/code-yeongyu/oh-my-openagent/tree/dev/packages/omo-opencode/src/hooks/atlas) ← 32 个文件
 
 ### 10. ⚡ Sisyphus-Junior（小西西弗斯）— 专注任务执行器
 
-| 属性     | 值                              |
-| -------- | ------------------------------- |
-| 角色     | 专注任务执行者                  |
-| Mode     | `subagent`                      |
-| 你的配置 | `coding_plan/deepseek-v4-flash` |
-| 默认模型 | `anthropic/claude-sonnet-4-6`   |
-| 默认温度 | `0.1`                           |
+| 属性         | 值                              |
+| ------------ | ------------------------------- |
+| 角色         | 专注任务执行者                  |
+| Mode         | `subagent`                      |
+| 你的配置     | `coding_plan/deepseek-v4-flash` |
+| 官方推荐配置 | `anthropic/claude-sonnet-4-6`   |
+| 默认模型     | `anthropic/claude-sonnet-4-6`   |
+| 默认温度     | `0.1`                           |
 
 **职责**：
 
@@ -253,6 +263,8 @@ type SisyphusJuniorPromptSource =
 ```
 
 > 这就是每次我用 `task(category="quick", ...)` 时派出的 agent。
+
+> **官方推荐配置说明**：上表「官方推荐配置」来自上游 [`code-yeongyu/oh-my-openagent`](https://github.com/code-yeongyu/oh-my-openagent) 的 [`packages/model-core/src/agent-model-requirements.ts`](https://github.com/code-yeongyu/oh-my-openagent/blob/dev/packages/model-core/src/agent-model-requirements.ts) 中每个 Agent 的 `fallbackChain[0]`（即用户未覆写时的默认模型）；sisyphus-junior 另见 [`packages/omo-opencode/src/agents/sisyphus-junior/agent.ts`](https://github.com/code-yeongyu/oh-my-openagent/blob/dev/packages/omo-opencode/src/agents/sisyphus-junior/agent.ts) 的 `SISYPHUS_JUNIOR_DEFAULTS`。括号内的 `max` / `medium` / `high` / `xhigh` 为推理强度等级（reasoning variant）。模型解析顺序：用户覆写 > TUI 全局模型 > systemDefaultModel > fallbackChain[0]。
 
 ---
 
@@ -321,16 +333,18 @@ Hephaestus（深度工作者）
 
 ## 六、Agent 定义文件位置汇总
 
-| Agent                      | 定义文件（GitHub 源码）                                              |
-| -------------------------- | ------------------------------------------------------------------- |
-| Sisyphus                   | `packages/omo-opencode/src/agents/builtin-agents/sisyphus-agent.ts` |
-| Hephaestus                 | `packages/omo-opencode/src/agents/hephaestus/agent.ts`              |
-| Atlas                      | `packages/omo-opencode/src/agents/atlas/agent.ts`                   |
-| Sisyphus-Junior            | `packages/omo-opencode/src/agents/sisyphus-junior/agent.ts`         |
-| 其他（oracle、explore 等） | `packages/omo-opencode/src/agents/builtin-agents/general-agents.ts` |
-| Agent 类型定义             | `packages/omo-opencode/src/agents/types.ts`                         |
-| Agent 构建器               | `packages/omo-opencode/src/agents/agent-builder.ts`                 |
-| 你的配置                   | `~/.config/opencode/oh-my-openagent.jsonc`                          |
+| Agent                      | 定义文件（GitHub 源码）                                                                                                                          |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Sisyphus                   | [`.../sisyphus-agent.ts`](https://github.com/code-yeongyu/oh-my-openagent/blob/dev/packages/omo-opencode/src/agents/builtin-agents/sisyphus-agent.ts) |
+| Hephaestus                 | [`.../hephaestus/agent.ts`](https://github.com/code-yeongyu/oh-my-openagent/blob/dev/packages/omo-opencode/src/agents/hephaestus/agent.ts) |
+| Atlas                      | [`.../atlas/agent.ts`](https://github.com/code-yeongyu/oh-my-openagent/blob/dev/packages/omo-opencode/src/agents/atlas/agent.ts) |
+| Sisyphus-Junior            | [`.../sisyphus-junior/agent.ts`](https://github.com/code-yeongyu/oh-my-openagent/blob/dev/packages/omo-opencode/src/agents/sisyphus-junior/agent.ts) |
+| 其他（oracle、explore 等） | [`.../general-agents.ts`](https://github.com/code-yeongyu/oh-my-openagent/blob/dev/packages/omo-opencode/src/agents/builtin-agents/general-agents.ts) |
+| Agent 类型定义             | [`.../agents/types.ts`](https://github.com/code-yeongyu/oh-my-openagent/blob/dev/packages/omo-opencode/src/agents/types.ts) |
+| Agent 构建器               | [`.../agent-builder.ts`](https://github.com/code-yeongyu/oh-my-openagent/blob/dev/packages/omo-opencode/src/agents/agent-builder.ts) |
+| 你的配置                   | `~/.config/opencode/oh-my-openagent.jsonc`（本地，非仓库内）                                                                                     |
+
+> 表中 `...` 代表 `packages/omo-opencode/src/agents`（`其他` 行为 `.../builtin-agents`）。
 
 ---
 
