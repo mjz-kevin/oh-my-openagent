@@ -1,0 +1,351 @@
+一、Agent介绍
+Sisyphus(西西弗斯) — 任务执行者  名字来源:推石头上山的国王,象征专注和坚持。
+Prometheus(普罗米修斯) — 规划顾问 名字来源:盗火给人类的泰坦,象征远见和智慧。
+Atlas(泰坦神) 扛起天穹的泰坦神 Atlas
+
+  Prometheus                    Atlas                          Sisyphus
+  ┌─────────────┐              ┌─────────────┐               ┌─────────────┐
+  │   规划者     │  ──计划──→   │   编排器     │  ──任务──→    │   执行者     │
+  │   Planner    │              │ Orchestrator │              │  Executor    │
+  └─────────────┘              └─────────────┘               └─────────────┘
+
+Prometheus(普罗米修斯) — 规划顾问
+名字来源:盗火给人类的泰坦,象征远见和智慧。
+
+做什么:
+
+接到一个模糊需求后,先探索代码库,搞清楚现有架构
+只问那些探索解决不了的关键问题(不啰嗦)
+研究最佳实践和设计模式
+写一份决策完整的工作计划(.omo/plans/ 下的 .md 文件)
+计划写完后,等待用户批准
+一句话:Prometheus 决定"做什么"
+
+Atlas — 主编排器
+名字来源:扛起天穹的泰坦,象征承载和协调。
+
+做什么:
+
+拿到 Prometheus 写好的计划
+拆解成可并行执行的子任务
+并行派出多个 Sisyphus 同时干活
+验证每个 Sisyphus 的结果
+循环直到所有任务完成
+最后派出 Final Verification Wave 做最终审核
+一句话:Atlas 决定"谁来做、什么时候做、做完没"
+
+Sisyphus(西西弗斯) — 任务执行者
+名字来源:推石头上山的国王,象征专注和坚持。
+
+做什么:
+
+接到一个具体、明确的任务
+直接读文件、写代码、改代码
+完成一个任务后汇报结果
+如果失败了就重试(通过 task_id 延续上下文)
+一句话:Sisyphus 负责"动手做"
+
+
+二、源码目录结构
+
+oh-my-openagent/
+├── packages/
+│   ├── omo-opencode/           ← ★ 核心插件源码 (hooks + skills 主入口)
+│   │   └── src/
+│   │       ├── index.ts         ← 插件入口
+│   │       ├── hooks/           ← 所有 Hook 实现
+│   │       │   ├── prometheus-md-only/    ← Prometheus 写保护
+│   │       │   ├── atlas/                 ← Atlas 编排器
+│   │       │   ├── start-work/            ← /start-work 命令
+│   │       │   ├── keyword-detector/      ← 关键词检测 (ulw/ultrawork)
+│   │       │   ├── ralph-loop/            ← Ralph 循环
+│   │       │   ├── todo-continuation-enforcer/ ← Todo 续行
+│   │       │   ├── boulder-state/         ← Boulder 状态管理
+│   │       │   ├── stop-continuation-guard/   ← 停止保护
+│   │       │   └── ... (共 50+ hooks)
+│   │       ├── skills/          ← 技能定义 (SKILL.md)
+│   │       └── cli/             ← CLI 入口
+│   │
+│   ├── boulder-state/           ← Boulder 状态核心逻辑
+│   ├── delegate-core/           ← 任务委派核心
+│   ├── shared-skills/           ← 共享技能
+│   │   └── skills/
+│   │       ├── ulw-plan/        ← ★ /ulw-plan 技能
+│   │       │   ├── SKILL.md
+│   │       │   ├── references/
+│   │       │   │   ├── full-workflow.md
+│   │       │   │   ├── intent-clear.md
+│   │       │   │   └── intent-unclear.md
+│   │       │   ├── scripts/
+│   │       │   │   └── scaffold-plan.mjs
+│   │       │   └── agents/
+│   │       │       └── openai.yaml
+│   │       │
+│   │       ├── ulw-research/    ← ★ /ulw-research 技能
+│   │       │   ├── SKILL.md
+│   │       │   └── ATTRIBUTION.md
+│   │       │
+│   │       ├── start-work/      ← ★ /start-work 技能
+│   │       │   └── SKILL.md
+│   │       │
+│   │       └── ... (其他共享技能)
+│   │
+│   ├── omo-codex/               ← Codex CLI 兼容层
+│   ├── hashline-core/           ← Hashline 编辑工具
+│   ├── team-core/               ← Team Mode 核心
+│   ├── model-core/              ← 模型路由核心
+│   └── utils/                   ← 工具函数
+│
+├── .agents/skills/              ← 额外 agent 技能
+│   ├── hyperplan/
+│   ├── security-research/
+│   └── ...
+│
+└── dist/                        ← 编译输出 (npm 发布)
+    ├── hooks/                   ← 编译后的 hooks (仅 .d.ts 类型声明)
+    ├── skills/                  ← 编译后的 skills (含 SKILL.md)
+    └── index.js                 ← 插件入口
+
+
+三、核心源码文件位置对照表
+3.1 本地已安装的源码 (npm 包)
+这些是编译后的 .d.ts 声明文件,真正的 .ts 源码在 GitHub 上
+
+模块	本地路径
+Prometheus 写保护 Hook	dist/hooks/prometheus-md-only/
+Atlas 编排器 Hook	dist/hooks/atlas/
+Start-Work Hook	dist/hooks/start-work/
+关键词检测 Hook	dist/hooks/keyword-detector/
+Ralph 循环 Hook	dist/hooks/ralph-loop/
+Todo 续行 Hook	dist/hooks/todo-continuation-enforcer/
+/ulw-plan 技能	dist/skills/ulw-plan/
+/ulw-research 技能	dist/skills/ulw-research/
+/start-work 技能	dist/skills/start-work/
+计划骨架生成脚本	dist/skills/ulw-plan/scripts/scaffold-plan.mjs
+3.2 需要从 GitHub 获取的源码
+文件	GitHub 路径
+prometheus-md-only Hook 实现	packages/omo-opencode/src/hooks/prometheus-md-only/hook.ts
+Atlas Hook 实现	packages/omo-opencode/src/hooks/atlas/atlas-hook.ts
+关键词检测实现	packages/omo-opencode/src/hooks/keyword-detector/hook.ts
+Ralph 循环实现	packages/omo-opencode/src/hooks/ralph-loop/ralph-loop-hook.ts
+Todo 续行实现	packages/omo-opencode/src/hooks/todo-continuation-enforcer/handler.ts
+Start-Work 实现	packages/omo-opencode/src/hooks/start-work/start-work-hook.ts
+Boulder 状态管理	packages/boulder-state/src/
+任务委派核心	packages/delegate-core/src/
+插件入口	packages/omo-opencode/src/index.ts
+四、架构分层详解
+4.1 整体架构:三层模型
+┌─────────────────────────────────────────────────────┐
+│                    opencode 内核                       │
+│  (工具执行、会话管理、消息路由、LSP、终端)              │
+└──────────────────┬──────────────────────────────────┘
+                   │ 插件 SDK (@opencode-ai/plugin)
+                   ▼
+┌─────────────────────────────────────────────────────┐
+│              oh-my-openagent 插件层                    │
+│                                                       │
+│  ┌─────────────────────────────────────────────┐     │
+│  │           Hooks (钩子系统) 50+ 个             │     │
+│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐    │     │
+│  │  │ keyword- │ │prometheus│ │  atlas   │    │     │
+│  │  │ detector │ │-md-only  │ │  hook    │    │     │
+│  │  └──────────┘ └──────────┘ └──────────┘    │     │
+│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐    │     │
+│  │  │ ralph-   │ │  todo-   │ │  start-  │    │     │
+│  │  │ loop     │ │enforcer  │ │  work    │    │     │
+│  │  └──────────┘ └──────────┘ └──────────┘    │     │
+│  └─────────────────────────────────────────────┘     │
+│                                                       │
+│  ┌─────────────────────────────────────────────┐     │
+│  │        Skills (技能系统)                      │     │
+│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐    │     │
+│  │  │ ulw-plan │ │ulw-      │ │ start-   │    │     │
+│  │  │ SKILL.md │ │research  │ │ work     │    │     │
+│  │  │          │ │SKILL.md  │ │ SKILL.md │    │     │
+│  │  └──────────┘ └──────────┘ └──────────┘    │     │
+│  └─────────────────────────────────────────────┘     │
+│                                                       │
+│  ┌─────────────────────────────────────────────┐     │
+│  │        状态文件系统 (.omo/)                    │     │
+│  │  boulder.json  │  plans/*.md  │  drafts/*.md │     │
+│  │  ledgers/      │  notepads/   │  evidence/   │     │
+│  └─────────────────────────────────────────────┘     │
+└─────────────────────────────────────────────────────┘
+4.2 Hook 生命周期
+每个 Hook 可以挂载到以下生命周期事件:
+
+tool_execute_before    ← 工具执行前(拦截/修改)
+tool_execute_after     ← 工具执行后(验证/记录)
+message_before_send    ← 消息发送前(注入)
+message_after_receive  ← 消息接收后(解析)
+session_start          ← 会话开始
+session_end            ← 会话结束
+system_prompt_build    ← 构建系统提示时
+关键 Hook 及挂载点:
+
+Hook	挂载事件	作用
+prometheus-md-only	tool_execute_before	拦截 Write/Edit,只允许写 .omo/*.md
+keyword-detector	message_before_send	检测关键词,注入 skill 指令
+atlas	system_prompt_build	注入 Atlas 编排器指令
+ralph-loop	message_after_receive	检测完成状态,自动续行
+todo-continuation-enforcer	session_end	检测未完成 todo,自动触发下一轮
+start-work	tool_execute_before	读取计划,设置 Boulder 状态
+4.3 Skill 加载机制
+用户输入 "/ulw-plan 做个博客系统"
+  ↓
+① keyword-detector hook 检测到 "ulw-plan"
+  ↓
+② 从 dist/skills/ulw-plan/SKILL.md 加载技能
+  ↓
+③ SKILL.md 被注入到 system prompt 中
+  ↓
+④ 我的行为被 SKILL.md 中的规则约束:
+    - "你是 Prometheus,一个规划顾问"
+    - "你只写 .omo/*.md 文件"
+    - "探索代码库,判断意图"
+    - ...
+五、核心 Hook 源码分析
+5.1 prometheus-md-only Hook
+作用: 当我是 Prometheus 角色时,拦截所有 Write/Edit 工具,只允许写 .omo/*.md
+
+// packages/omo-opencode/src/hooks/prometheus-md-only/constants.ts
+const HOOK_NAME = "prometheus-md-only";
+const ALLOWED_PATH_PREFIX = ".omo";      // 只允许 .omo/ 路径
+const ALLOWED_EXTENSIONS = [".md"];      // 只允许 .md 文件
+const BLOCKED_TOOLS = ["write", "edit"]; // 拦截写工具
+// packages/omo-opencode/src/hooks/prometheus-md-only/path-policy.ts
+// 路径策略:
+// 1. 检查路径是否以 .omo/ 开头
+// 2. 检查扩展名是否为 .md
+// 3. 拒绝符号链接(防止绕过)
+// 4. 拒绝任何逃逸工作目录的路径
+// packages/omo-opencode/src/hooks/prometheus-md-only/agent-resolution.ts
+// 确定当前 agent:
+// 优先级:
+//   1. 内存中的 session agent (由 /start-work 设置)
+//   2. Boulder 状态中的 agent (跨重启持久化)
+//   3. 消息文件中的 agent (兜底)
+// 
+// 修复了 issue #927: 中断后重启,
+// 内存清空,但 boulder.json 保留 agent: "atlas"
+5.2 keyword-detector Hook
+作用: 检测用户输入中的关键词,触发对应的 skill 加载
+
+// packages/omo-opencode/src/hooks/keyword-detector/detector.ts
+// 检测逻辑:
+// 1. 扫描用户消息中的关键词
+// 2. 匹配预定义的关键词列表
+// 3. 触发对应的 skill 加载
+
+// packages/omo-opencode/src/hooks/keyword-detector/ultrawork/index.ts
+// ultrawork 消息路由:
+// 1. Planner agent (prometheus/plan) → planner.ts
+// 2. GPT 模型 → gpt.ts
+// 3. Gemini 模型 → gemini.ts
+// 4. GLM 模型 → glm.ts
+// 5. 默认 (Claude 等) → default.ts
+5.3 atlas Hook
+作用: 当我是 Atlas 角色时,注入编排器系统指令
+
+// packages/omo-opencode/src/hooks/atlas/
+// 文件列表:
+// ├── atlas-hook.ts              ← 主 Hook 入口
+// ├── task-context.ts            ← 任务上下文管理
+// ├── tool-execute-before.ts     ← 工具执行前拦截
+// ├── tool-execute-after.ts      ← 工具执行后验证
+// ├── verification-reminders.ts  ← 验证提醒注入
+// ├── boulder-continuation-injector.ts  ← Boulder 续行
+// ├── final-wave-approval-gate.ts       ← 最终验证波次
+// ├── idle-continuation.ts       ← 空闲续行
+// ├── idle-completion-nudge.ts   ← 完成提示
+// └── ... (共 32 个文件)
+5.4 ralph-loop Hook
+作用: 自我引用的执行循环,不达 100% 不停止
+
+// packages/omo-opencode/src/hooks/ralph-loop/
+// 文件列表:
+// ├── ralph-loop-hook.ts         ← 主 Hook
+// ├── loop-state-controller.ts   ← 循环状态控制
+// ├── iteration-continuation.ts  ← 迭代续行
+// ├── completion-handler.ts      ← 完成处理
+// ├── verification-failure-handler.ts  ← 验证失败处理
+// ├── no-progress-turn-detector.ts     ← 无进展检测
+// ├── continuation-prompt-injector.ts  ← 续行提示注入
+// └── ... (共 31 个文件)
+5.5 start-work Hook
+作用: 读取计划文件,设置 Boulder 状态,切换到 Atlas 角色
+
+// packages/omo-opencode/src/hooks/start-work/
+// 文件列表:
+// ├── start-work-hook.ts         ← 主 Hook
+// ├── plan-selection.ts          ← 计划选择
+// ├── work-initializer.ts        ← 工作初始化
+// ├── worktree-detector.ts       ← 工作树检测
+// ├── context-info-builder.ts    ← 上下文构建
+// └── ... (共 12 个文件)
+六、Boulder 状态系统
+作用: 持久化工作状态,跨会话/跨重启恢复
+
+// packages/boulder-state/src/
+// 核心数据结构:
+interface BoulderState {
+  schema_version: number;
+  active_work_id: string;
+  works: {
+    [workId: string]: {
+      work_id: string;
+      active_plan: string;       // .omo/plans/<slug>.md
+      plan_name: string;
+      session_ids: string[];     // 关联的会话 ID
+      status: "active" | "paused" | "completed";
+      worktree_path: string | null;
+      agent?: string;            // "atlas" | "prometheus"
+      started_at?: string;
+      elapsed_ms?: number;
+      task_sessions?: Array<{
+        label: string;
+        title: string;
+        elapsed_ms: number;
+      }>;
+    };
+  };
+}
+存储位置: .omo/boulder.json
+
+七、完整工作流时序
+用户: "/ulw-plan 做个博客系统"
+  │
+  ├─→ keyword-detector 检测 "ulw-plan"
+  ├─→ 加载 ulw-plan/SKILL.md → 我变成 Prometheus
+  ├─→ prometheus-md-only 激活 → 只能写 .omo/*.md
+  │
+  ├─→ 探索代码库
+  ├─→ 判断意图 (CLEAR/UNCLEAR)
+  ├─→ 运行 scaffold-plan.mjs
+  │     └─→ 生成 .omo/drafts/<slug>.md
+  │     └─→ 生成 .omo/plans/<slug>.md (骨架)
+  │
+  ├─→ 等待用户批准
+  │
+用户: "批准"
+  │
+  ├─→ 追加 todo 到计划文件
+  └─→ "请用 /start-work 开始执行"
+
+用户: "/start-work"
+  │
+  ├─→ start-work Hook 激活
+  ├─→ 读取 .omo/plans/<slug>.md
+  ├─→ 写入 .omo/boulder.json (agent: "atlas")
+  ├─→ atlas Hook 激活 → 我变成 Atlas
+  │
+  ├─→ 读取计划,分析依赖
+  ├─→ 并行派出多个 Sisyphus
+  ├─→ 验证每个结果
+  ├─→ 更新计划 checkbox
+  │
+  ├─→ todo-continuation-enforcer 检测未完成
+  ├─→ 自动继续下一轮
+  │
+  └─→ 全部完成 → ralph-loop 检测完成
+       → 输出 ORCHESTRATION COMPLETE
