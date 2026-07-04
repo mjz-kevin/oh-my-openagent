@@ -2,29 +2,6 @@
 
 > oh-my-openagent 内置 **10 个 Agent** 的完整解读：角色定位、模型配置、职责分工、源码位置、提示词路由，以及 Agent 分类体系与协作关系图。
 
----
-
-## 目录
-
-- [一、Agent 总览](#一agent-总览)
-- [二、每个 Agent 详细介绍](#二每个-agent-详细介绍)
-  - [1. Sisyphus — 主编排器](#1-sisyphus--主编排器)
-  - [2. Hephaestus — 深度自主工作者](#2-hephaestus--深度自主工作者)
-  - [3. Oracle — 高级咨询师](#3-oracle--高级咨询师)
-  - [4. Librarian — 代码库/文档研究员](#4-librarian--代码库文档研究员)
-  - [5. Explore — 快速代码搜索](#5-explore--快速代码搜索)
-  - [6. Multimodal Looker — 媒体分析](#6-multimodal-looker--媒体分析)
-  - [7. Metis — 计划顾问](#7-metis--计划顾问)
-  - [8. Momus — 计划评论家](#8-momus--计划评论家)
-  - [9. Atlas — 编排器](#9-atlas--编排器)
-  - [10. Sisyphus-Junior — 专注任务执行器](#10-sisyphus-junior--专注任务执行器)
-- [三、Agent 分类体系](#三agent-分类体系)
-- [四、Category 系统（Sisyphus-Junior 的领域路由）](#四category-系统sisyphus-junior-的领域路由)
-- [五、Agent 关系图](#五agent-关系图)
-- [六、Agent 定义文件位置汇总](#六agent-定义文件位置汇总)
-
----
-
 ## 一、Agent 总览
 
 oh-my-openagent 共有 **10 个内置 Agent**：
